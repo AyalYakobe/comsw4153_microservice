@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field, EmailStr, StringConstraints
 
 from .address import AddressBase
 
-# Columbia UNI: 2–3 lowercase letters + 1–4 digits (e.g., abc1234)
+# Department UNI: 2–3 lowercase letters + 1–4 digits (e.g., abc1234)
 UNIType = Annotated[str, StringConstraints(pattern=r"^[a-z]{2,3}\d{1,4}$")]
 
 
@@ -59,7 +59,7 @@ class DepartmentCreate(DepartmentBase):
 class DepartmentUpdate(BaseModel):
     """Partial update for a department; supply only fields to change."""
     code: Optional[UNIType] = Field(
-        None, description="Columbia UNI.", json_schema_extra={"example": "ab1234"}
+        None, description="Department UNI.", json_schema_extra={"example": "ab1234"}
     )
     staff: Optional[str] = Field(None, json_schema_extra={"example": "Augusta"})
     founding_date: Optional[date] = Field(None, json_schema_extra={"example": "1815-12-10"})
@@ -69,7 +69,7 @@ class DepartmentRead(DepartmentBase):
     """Server representation returned to clients."""
     id: UUID = Field(
         default_factory=uuid4,
-        description="Server-generated Lecture ID.",
+        description="Server-generated Department ID.",
         json_schema_extra={"example": "99999999-9999-4999-8999-999999999999"},
     )
     created_at: datetime = Field(

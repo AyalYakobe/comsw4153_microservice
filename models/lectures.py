@@ -59,7 +59,7 @@ class LectureCreate(LectureBase):
 class LectureUpdate(BaseModel):
     """Partial update for a Person; supply only fields to change."""
     code: Optional[UNIType] = Field(
-        None, description="Columbia UNI.", json_schema_extra={"example": "ab1234"}
+        None, description="Lecture UNI.", json_schema_extra={"example": "ab1234"}
     )
     professor: Optional[str] = Field(None, json_schema_extra={"example": "Augusta"})
     start_date: Optional[date] = Field(None, json_schema_extra={"example": "1815-12-10"})

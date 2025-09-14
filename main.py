@@ -33,7 +33,7 @@ app = FastAPI(
 )
 
 lectures: Dict[str, LectureRead] = {}  # key is lecture code
-departments: Dict[str, DepartmentRead] = {}  # key is lecture code
+departments: Dict[str, DepartmentRead] = {}  # key is department code
 # -----------------------------------------------------------------------------
 # Address endpoints
 # -----------------------------------------------------------------------------
@@ -109,6 +109,7 @@ def update_address(address_id: UUID, update: AddressUpdate):
 # Lectures endpoints
 # -----------------------------------------------------------------------------
 
+
 @app.delete("/lectures/{code}", status_code=204)
 def delete_lecture(code: str):
     if code not in lectures:
@@ -168,7 +169,7 @@ def delete_department(code: str):
 @app.post("/departments", response_model=DepartmentRead, status_code=201)
 def create_department(department: DepartmentCreate):
     department_read = DepartmentRead(**department.model_dump())
-    departments[department_read.code] = department_read  # ✅ correct dict
+    departments[department_read.code] = department_read 
     return department_read
 
 @app.get("/departments", response_model=List[DepartmentRead])
