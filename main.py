@@ -109,6 +109,13 @@ def update_address(address_id: UUID, update: AddressUpdate):
 # Lectures endpoints
 # -----------------------------------------------------------------------------
 
+@app.delete("/lectures/{code}", status_code=204)
+def delete_lecture(code: str):
+    if code not in lectures:
+        raise HTTPException(status_code=404, detail="Lecture not found")
+    del lectures[code]
+    return None
+
 @app.post("/lectures", response_model=LectureRead, status_code=201)
 def create_lecture(lecture: LectureCreate):
     lecture_read = LectureRead(**lecture.model_dump())
@@ -151,26 +158,33 @@ def update_lecture(code: str, update: LectureUpdate):
 # Departments endpoints
 # -----------------------------------------------------------------------------
 
-@app.post("/departments", response_model=LectureRead, status_code=201)
+@app.delete("/departments/{code}", status_code=204)
+def delete_department(code: str):
+    if code not in departments:
+        raise HTTPException(status_code=404, detail="Department not found")
+    del departments[code]
+    return None
+
+@app.post("/departments", response_model=DepartmentRead, status_code=201)
 def create_department(department: DepartmentCreate):
     department_read = DepartmentRead(**department.model_dump())
-    lectures[department_read.code] = department_read
+    departments[department_read.code] = department_read  # ✅ correct dict
     return department_read
 
 @app.get("/departments", response_model=List[DepartmentRead])
 def list_departments(
     code: Optional[str] = Query(None, description="Filter by code"),
-    head: Optional[str] = Query(None, description="Filter by department head"),
-    established_date: Optional[str] = Query(None, description="Filter by established date (YYYY-MM-DD)"),
+    staff: Optional[str] = Query(None, description="Filter by staff"),
+    founding_date: Optional[str] = Query(None, description="Filter by founding date (YYYY-MM-DD)"),
 ):
     results = list(departments.values())
 
     if code is not None:
         results = [d for d in results if d.code == code]
-    if head is not None:
-        results = [d for d in results if d.head == head]
-    if established_date is not None:
-        results = [d for d in results if str(d.established_date) == established_date]
+    if staff is not None:
+        results = [d for d in results if d.staff == staff]
+    if founding_date is not None:
+        results = [d for d in results if str(d.founding_date) == founding_date]
 
     return results
 
@@ -188,7 +202,6 @@ def update_department(code: str, update: DepartmentUpdate):
     stored.update(update.model_dump(exclude_unset=True))
     departments[code] = DepartmentRead(**stored)
     return departments[code]
-
 
 # -----------------------------------------------------------------------------
 # Person endpoints
